@@ -21,8 +21,8 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 
 ## สัปดาห์ที่ 1: พื้นฐาน Node.js + SQL
 - [x] **Day 1** · 2026-10-29 — Event loop, async/await, Promise, modules, npm → อธิบาย event loop ได้ใน 1 นาที
-- [ ] **Day 2** · 2026-10-30 — HTTP: method, status code, header, REST → สรุป status code ที่ใช้บ่อย
-- [ ] **Day 3** · 2026-10-31 — Express: route, middleware, error handler → CRUD API เก็บข้อมูลใน memory (โฟลเดอร์ playground แยก)
+- [x] **Day 2** · 2026-10-30 — HTTP: method, status code, header, REST → สรุป status code ที่ใช้บ่อย
+- [x] **Day 3** · 2026-10-31 — Express: route, middleware, error handler → CRUD API เก็บข้อมูลใน memory (โฟลเดอร์ playground แยก)
 - [ ] **Day 4** · 2026-11-01 — `docker compose up -d` แล้วฝึก SELECT / WHERE / ORDER BY → ต่อ Postgres ได้
 - [ ] **Day 5** · 2026-11-02 — JOIN, GROUP BY, subquery → ทำโจทย์ SQL 15 ข้อ (sqlbolt.com, pgexercises.com)
 - [ ] **Day 6** · 2026-11-03 — Index, transaction, normalization → อธิบายได้ว่าเมื่อไรควรใส่ index
