@@ -20,7 +20,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 4. ส่งใบสมัครงานไปพร้อมกัน ไม่ต้องรอให้ครบ 30 วัน
 
 ## สัปดาห์ที่ 1: พื้นฐาน Node.js + SQL
-- [ ] **Day 1** · 2026-10-29 — Event loop, async/await, Promise, modules, npm → อธิบาย event loop ได้ใน 1 นาที
+- [x] **Day 1** · 2026-10-29 — Event loop, async/await, Promise, modules, npm → อธิบาย event loop ได้ใน 1 นาที
 - [ ] **Day 2** · 2026-10-30 — HTTP: method, status code, header, REST → สรุป status code ที่ใช้บ่อย
 - [ ] **Day 3** · 2026-10-31 — Express: route, middleware, error handler → CRUD API เก็บข้อมูลใน memory (โฟลเดอร์ playground แยก)
 - [ ] **Day 4** · 2026-11-01 — `docker compose up -d` แล้วฝึก SELECT / WHERE / ORDER BY → ต่อ Postgres ได้
