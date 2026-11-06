@@ -26,7 +26,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 - [x] **Day 4** · 2026-11-01 — `docker compose up -d` แล้วฝึก SELECT / WHERE / ORDER BY → ต่อ Postgres ได้
 - [x] **Day 5** · 2026-11-02 — JOIN, GROUP BY, subquery → ทำโจทย์ SQL 15 ข้อ (sqlbolt.com, pgexercises.com)
 - [x] **Day 6** · 2026-11-03 — Index, transaction, normalization → อธิบายได้ว่าเมื่อไรควรใส่ index
-- [ ] **Day 7** · 2026-11-04 — ออกแบบ ER diagram: patients, doctors, appointments, queue, users → ไฟล์ ER ใน docs/
+- [x] **Day 7** · 2026-11-04 — ออกแบบ ER diagram: patients, doctors, appointments, queue, users → ไฟล์ ER ใน docs/
 
 ## สัปดาห์ที่ 2: NestJS + Prisma + CRUD
 - [ ] **Day 8** · 2026-11-05 — NestJS: module, controller, service, DI → push โปรเจกต์ขึ้น GitHub
