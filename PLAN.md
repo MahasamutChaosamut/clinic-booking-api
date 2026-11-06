@@ -29,7 +29,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 - [x] **Day 7** · 2026-11-04 — ออกแบบ ER diagram: patients, doctors, appointments, queue, users → ไฟล์ ER ใน docs/
 
 ## สัปดาห์ที่ 2: NestJS + Prisma + CRUD
-- [ ] **Day 8** · 2026-11-05 — NestJS: module, controller, service, DI → push โปรเจกต์ขึ้น GitHub
+- [x] **Day 8** · 2026-11-05 — NestJS: module, controller, service, DI → push โปรเจกต์ขึ้น GitHub
 - [ ] **Day 9** · 2026-11-06 — Prisma: schema, migration, relation → มีตารางครบตาม ER
 - [ ] **Day 10** · 2026-11-07 — DTO + validation (class-validator) → API patients ครบ CRUD
 - [ ] **Day 11** · 2026-11-08 — Relation 1-N และ N-N → API doctors และ appointments
