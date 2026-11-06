@@ -21,9 +21,9 @@ CREATE INDEX appointments_at_index ON appointments (appointment_at);
 
 CREATE INDEX doctor_id_index ON appointments (doctor_id);
 
-DROP index appointments.doctor_id_index
+DROP index doctor_id_index;
 
-create index idx_appointments_doctor_id_appointment_at on appointments(doctor_id, appointment_at)
+create index idx_appointments_doctor_id_appointment_at on appointments(doctor_id, appointment_at);
 
 EXPLAIN ANALYZE
 SELECT id, patient_id, doctor_id, appointment_at
