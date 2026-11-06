@@ -9,8 +9,8 @@ appointments }o--|| doctors: "has"
 
     patients {
         int id PK
-        text first_name
-        text last_name
+        varchar(50) first_name
+        varchar(50) last_name
         date birth_date
         varchar(20) phone
         timestamptz created_at
@@ -20,7 +20,7 @@ appointments }o--|| doctors: "has"
         int patient_id FK
         int doctor_id FK
         timestamptz appointment_at
-        text status
+        AppointmentStatus status
         timestamptz created_at
     }
     doctors {
@@ -30,19 +30,21 @@ appointments }o--|| doctors: "has"
         varchar(100) specialty
         varchar(15) phone
         varchar(100) email
+        timestamptz deleted_at
         int user_id FK, UK
     }
     users {
         int id PK
-        text email UK
+        varchar(100) email UK
         text password_hash
-        text role
+        Role role
         timestamptz created_at
     }
     queue{
         int id PK
         int queue_number
-        text status
+        date queue_date
+        QueueStatus status
         timestamptz called_at
         timestamptz created_at
         int appointment_id FK,UK
