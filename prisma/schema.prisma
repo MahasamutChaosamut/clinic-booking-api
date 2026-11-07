@@ -11,7 +11,7 @@ model Patient {
   id           Int           @id @default(autoincrement())
   firstName    String        @map("first_name") @db.VarChar(50)
   lastName     String        @map("last_name") @db.VarChar(50)
-  birthDate    DateTime      @map("birth_date") @db.Timestamptz
+  birthDate    DateTime      @map("birth_date") @db.Date
   phone        String?       @db.VarChar(20)
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
   appointments Appointment[]
@@ -54,7 +54,7 @@ model Queue {
   id            Int         @id @default(autoincrement())
   appointmentId Int         @unique @map("appointment_id")
   appointment   Appointment @relation(fields: [appointmentId], references: [id])
-  queueDate     DateTime    @map("queue_date") @db.Timestamptz
+  queueDate     DateTime    @map("queue_date") @db.Date
   queueNumber   Int         @map("queue_number")
   status        QueueStatus @default(waiting)
   calledAt      DateTime?   @map("called_at") @db.Timestamptz
