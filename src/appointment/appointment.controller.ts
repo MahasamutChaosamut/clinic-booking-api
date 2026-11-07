@@ -5,7 +5,7 @@ import { AppointmentService } from './appointment.service.js';
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
   @Get()
-  getAppointments() {
-    return this.appointmentService.getAppointments();
+  getAppointments(): Promise<number> {
+    return this.appointmentService.countPatients();
   }
 }

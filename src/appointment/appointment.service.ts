@@ -5,7 +5,7 @@ import { PatientsService } from '../patients/patients.service.js';
 export class AppointmentService {
   constructor(private readonly patientsService: PatientsService) {}
 
-  getAppointments(): number {
-    return this.patientsService.getPatients().length;
+  async countPatients() {
+    return (await this.patientsService.findAll()).length;
   }
 }
