@@ -1,33 +1,34 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
-import { DoctorService } from './doctors.service.js';
+import { DoctorsService } from './doctors.service.js';
 import { CreateDoctorDto } from './dto/create-doctor.dto.js';
-import { Doctor } from '../generated/prisma/browser.js';
+import type { Doctor } from '../generated/prisma/client.js';
 import { UpdateDoctorDto } from './dto/update-doctor.dto.js';
 
-@Controller('doctor')
-export class DoctorController {
-  constructor(private readonly doctorService: DoctorService) {}
+@Controller('doctors')
+export class DoctorsController {
+  constructor(private readonly doctorsService: DoctorsService) {}
   @Get()
   async findAll() {
-    return await this.doctorService.findAll();
+    return await this.doctorsService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Doctor> {
-    return await this.doctorService.findOne(id);
+    return await this.doctorsService.findOne(id);
   }
 
   @Post()
   async create(@Body() createDoctorDto: CreateDoctorDto): Promise<Doctor> {
-    return await this.doctorService.create(createDoctorDto);
+    return await this.doctorsService.create(createDoctorDto);
   }
 
   @Patch(':id')
@@ -35,6 +36,11 @@ export class DoctorController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDoctorDto: UpdateDoctorDto,
   ): Promise<Doctor> {
-    return await this.doctorService.patch(id, updateDoctorDto);
+    return await this.doctorsService.update(id, updateDoctorDto);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<Doctor> {
+    return await this.doctorsService.remove(id);
   }
 }
