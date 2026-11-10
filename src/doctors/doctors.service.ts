@@ -17,9 +17,6 @@ export class DoctorsService {
   async findOne(id: number): Promise<Doctor> {
     const doctor = await this.prisma.doctor.findFirst({
       where: { id, deletedAt: null },
-      include: {
-        appointments: true,
-      },
     });
     if (doctor) {
       return doctor;

@@ -44,7 +44,7 @@ export class PatientsController {
   }
 
   @Get(':id/appointments')
-  async findAppointment(
+  async findAppointments(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Appointment[]> {
     return this.patientsService.findAppointments(id);

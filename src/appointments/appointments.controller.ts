@@ -6,18 +6,25 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { AppointmentsService } from './appointments.service.js';
+import {
+  AppointmentsService,
+  type PaginatedAppointments,
+} from './appointments.service.js';
 import type { Appointment } from '../generated/prisma/client.js';
 import { CreateAppointmentDto } from './dto/create-appointment.dto.js';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto.js';
+import { FindAppointmentsQueryDto } from './dto/find-appointments-query.dto.js';
 
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
   @Get()
-  findAll(): Promise<Appointment[]> {
-    return this.appointmentsService.findAll();
+  findAll(
+    @Query() query: FindAppointmentsQueryDto,
+  ): Promise<PaginatedAppointments> {
+    return this.appointmentsService.findAll(query);
   }
 
   @Get(':id')

@@ -5,6 +5,12 @@ import { DoctorsService } from '../doctors/doctors.service.js';
 import type { Appointment } from '../generated/prisma/client.js';
 import { CreateAppointmentDto } from './dto/create-appointment.dto.js';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto.js';
+import { FindAppointmentsQueryDto } from './dto/find-appointments-query.dto.js';
+
+export interface PaginatedAppointments {
+  data: Appointment[];
+  meta: { page: number; limit: number; total: number; totalPages: number };
+}
 
 @Injectable()
 export class AppointmentsService {
@@ -14,13 +20,31 @@ export class AppointmentsService {
     private readonly doctorsService: DoctorsService,
   ) {}
 
-  async findAll(): Promise<Appointment[]> {
-    return await this.prismaService.appointment.findMany({
+  async findAll(
+    query: FindAppointmentsQueryDto,
+  ): Promise<PaginatedAppointments> {
+    const start = new Date(`${query.date}T00:00:00+07:00`);
+    const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const where = {
+      doctorId: query.doctorId,
+      status: query.status,
+      appointmentAt: query.date ? { gte: start, lt: end } : undefined,
+    };
+    const data = await this.prismaService.appointment.findMany({
+      where,
       include: {
         patient: true,
         doctor: true,
       },
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: [{ appointmentAt: query.order ?? 'asc' }, { id: 'asc' }],
     });
+    const total = await this.prismaService.appointment.count({ where });
+    const totalPages = Math.ceil(total / limit);
+    return { data, meta: { page, limit, total, totalPages } };
   }
 
   async findOne(id: number): Promise<Appointment> {
