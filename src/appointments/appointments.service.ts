@@ -60,10 +60,10 @@ export class AppointmentsService {
     updateAppointmentDto: UpdateAppointmentDto,
   ): Promise<Appointment> {
     await this.findOne(id);
-    if (updateAppointmentDto.patientId) {
+    if (updateAppointmentDto.patientId !== undefined) {
       await this.patientsService.findOne(updateAppointmentDto.patientId);
     }
-    if (updateAppointmentDto.doctorId) {
+    if (updateAppointmentDto.doctorId !== undefined) {
       await this.doctorsService.findOne(updateAppointmentDto.doctorId);
     }
     return await this.prismaService.appointment.update({

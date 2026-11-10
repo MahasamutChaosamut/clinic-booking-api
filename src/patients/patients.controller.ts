@@ -9,7 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { PatientsService } from './patients.service.js';
-import type { Patient } from '../generated/prisma/client.js';
+import type { Appointment, Patient } from '../generated/prisma/client.js';
 import { CreatePatientDto } from './dto/create-patient.dto.js';
 import { UpdatePatientDto } from './dto/update-patient.dto.js';
 
@@ -41,5 +41,12 @@ export class PatientsController {
   @Post()
   create(@Body() createPatientDto: CreatePatientDto): Promise<Patient> {
     return this.patientsService.create(createPatientDto);
+  }
+
+  @Get(':id/appointments')
+  async findAppointment(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Appointment[]> {
+    return this.patientsService.findAppointments(id);
   }
 }

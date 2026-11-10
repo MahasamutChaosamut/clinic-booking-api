@@ -65,4 +65,12 @@ export class PatientsService {
       throw error;
     }
   }
+
+  async findAppointments(id: number) {
+    await this.findOne(id);
+    return this.prismaService.appointment.findMany({
+      where: { patientId: id },
+      include: { doctor: true },
+    });
+  }
 }

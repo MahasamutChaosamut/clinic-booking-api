@@ -14,5 +14,5 @@ export class UpdateAppointmentDto {
 
   @IsOptional()
   @IsEnum(AppointmentStatus)
-  status: AppointmentStatus;
+  status?: AppointmentStatus;
 }
