@@ -8,7 +8,8 @@ A REST API for a clinic appointment system: patients, doctors, appointments and 
 
 - **Runtime:** Node.js, TypeScript
 - **Framework:** NestJS
-- **Database:** PostgreSQL 17 (Docker Compose), Prisma *(planned)*
+- **Database:** PostgreSQL 17 (Docker Compose), Prisma 7
+- **Validation:** class-validator, class-transformer
 - **Testing:** Vitest, Supertest *(planned)*
 - **Tooling:** Docker, GitHub Actions *(planned)*
 
@@ -23,22 +24,62 @@ cp .env.example .env
 # 2. Start PostgreSQL
 docker compose up -d
 
-# 3. Create the schema and sample data (temporary, until Prisma migrations land)
-docker compose exec -T postgres psql -U clinic -d clinic_booking < sql/day4-patients.sql
-docker compose exec -T postgres psql -U clinic -d clinic_booking < sql/day4-seed.sql
-
-# 4. Run the API
+# 3. Install dependencies
 npm install
+
+# 4. Create the tables and generate the Prisma Client
+npx prisma migrate deploy
+npx prisma generate
+
+# 5. (Optional) Load sample patients, doctors and appointments
+docker compose exec -T postgres psql -U clinic -d clinic_booking < sql/day4-seed.sql
+docker compose exec -T postgres psql -U clinic -d clinic_booking < sql/day5-seed-doctors.sql
+
+# 6. Run the API
 npm run start:dev
 ```
 
 The API runs on `http://localhost:3000`.
 
+## Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/patients` | List patients |
+| GET | `/patients/:id` | Get one patient |
+| GET | `/patients/:id/appointments` | List a patient's appointments with doctor details |
+| POST | `/patients` | Create a patient |
+| PATCH | `/patients/:id` | Update a patient |
+| DELETE | `/patients/:id` | Delete a patient (409 if they have appointments) |
+| GET | `/doctors` | List doctors |
+| GET | `/doctors/:id` | Get one doctor |
+| POST | `/doctors` | Create a doctor |
+| PATCH | `/doctors/:id` | Update a doctor |
+| DELETE | `/doctors/:id` | Soft delete a doctor |
+| GET | `/appointments` | List appointments with filters and pagination (see below) |
+| GET | `/appointments/:id` | Get one appointment with patient and doctor |
+| POST | `/appointments` | Book an appointment |
+| PATCH | `/appointments/:id` | Change patient, doctor or status |
+
+`GET /appointments` query parameters (all optional):
+
+| Parameter | Example | Notes |
+|---|---|---|
+| `doctorId` | `1` | Positive integer |
+| `status` | `booked` | One of `booked`, `completed`, `cancelled`, `no_show` |
+| `date` | `2026-11-03` | `YYYY-MM-DD`, matched as a whole day in Bangkok time (UTC+7) |
+| `order` | `desc` | `asc` (default) or `desc` by appointment time |
+| `page` | `2` | Default `1` |
+| `limit` | `20` | Default `10`, max `100` |
+
+The response is `{ data, meta }`, where `meta` holds `page`, `limit`, `total` and `totalPages`.
+
 ## Roadmap
 
-- [x] PostgreSQL in Docker Compose, initial `patients` schema
-- [ ] Patients / Doctors / Appointments CRUD with Prisma
-- [ ] Validation, pagination & filtering, Swagger docs
+- [x] PostgreSQL in Docker Compose
+- [x] Patients / Doctors / Appointments CRUD with Prisma
+- [x] Validation, pagination & filtering
+- [ ] Consistent error responses, Swagger docs
 - [ ] Auth: JWT + refresh token, role-based access (admin / doctor / staff)
 - [ ] Double-booking prevention with database transactions
 - [ ] Real-time queue via WebSocket
