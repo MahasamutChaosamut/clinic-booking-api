@@ -9,10 +9,12 @@ import {
 export class CreatePatientDto {
   @IsString()
   @IsNotEmpty()
+  @MaxLength(50)
   firstName: string;
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(50)
   lastName: string;
 
   @IsDateString()

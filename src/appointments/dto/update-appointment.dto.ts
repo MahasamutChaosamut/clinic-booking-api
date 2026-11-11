@@ -1,18 +1,18 @@
-import { IsEnum, IsInt, IsOptional, IsPositive } from 'class-validator';
+import { IsEnum, IsInt, IsPositive, ValidateIf } from 'class-validator';
 import { AppointmentStatus } from '../../generated/prisma/client.js';
 
 export class UpdateAppointmentDto {
+  @ValidateIf((_, value) => value !== undefined)
   @IsPositive()
-  @IsOptional()
   @IsInt()
   patientId?: number;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== undefined)
   @IsPositive()
   @IsInt()
   doctorId?: number;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== undefined)
   @IsEnum(AppointmentStatus)
   status?: AppointmentStatus;
 }
