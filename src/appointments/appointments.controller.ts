@@ -16,11 +16,18 @@ import type { Appointment } from '../generated/prisma/client.js';
 import { CreateAppointmentDto } from './dto/create-appointment.dto.js';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto.js';
 import { FindAppointmentsQueryDto } from './dto/find-appointments-query.dto.js';
+import {
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
+} from '@nestjs/swagger';
+import { ErrorResponseDto } from '../common/dto/error-response.dto.js';
 
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
   @Get()
+  @ApiBadRequestResponse({ type: ErrorResponseDto })
   findAll(
     @Query() query: FindAppointmentsQueryDto,
   ): Promise<PaginatedAppointments> {
@@ -28,11 +35,15 @@ export class AppointmentsController {
   }
 
   @Get(':id')
+  @ApiBadRequestResponse({ type: ErrorResponseDto })
+  @ApiNotFoundResponse({ type: ErrorResponseDto })
   findOne(@Param('id', ParseIntPipe) id: number): Promise<Appointment> {
     return this.appointmentsService.findOne(id);
   }
 
   @Post()
+  @ApiBadRequestResponse({ type: ErrorResponseDto })
+  @ApiNotFoundResponse({ type: ErrorResponseDto })
   create(
     @Body() createAppointmentDto: CreateAppointmentDto,
   ): Promise<Appointment> {
@@ -40,6 +51,8 @@ export class AppointmentsController {
   }
 
   @Patch(':id')
+  @ApiBadRequestResponse({ type: ErrorResponseDto })
+  @ApiNotFoundResponse({ type: ErrorResponseDto })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateAppointmentDto: UpdateAppointmentDto,

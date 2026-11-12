@@ -10,6 +10,7 @@ import {
   Min,
 } from 'class-validator';
 import { AppointmentStatus } from '../../generated/prisma/enums.js';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 export class FindAppointmentsQueryDto {
   @IsOptional()
   @Type(() => Number)
@@ -19,6 +20,9 @@ export class FindAppointmentsQueryDto {
 
   @IsOptional()
   @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: 'date must be YYYY-MM-DD' })
+  @ApiPropertyOptional({
+    example: '2026-11-03',
+  })
   date?: string;
 
   @IsOptional()
@@ -27,6 +31,7 @@ export class FindAppointmentsQueryDto {
 
   @IsOptional()
   @IsIn(['asc', 'desc'])
+  @ApiPropertyOptional({ enum: ['asc', 'desc'] })
   order?: 'asc' | 'desc';
 
   @IsOptional()

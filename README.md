@@ -10,6 +10,7 @@ A REST API for a clinic appointment system: patients, doctors, appointments and 
 - **Framework:** NestJS
 - **Database:** PostgreSQL 17 (Docker Compose), Prisma 7
 - **Validation:** class-validator, class-transformer
+- **API docs:** OpenAPI via @nestjs/swagger (CLI plugin)
 - **Testing:** Vitest, Supertest *(planned)*
 - **Tooling:** Docker, GitHub Actions *(planned)*
 
@@ -40,6 +41,8 @@ npm run start:dev
 ```
 
 The API runs on `http://localhost:3000`.
+
+Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the raw OpenAPI JSON is at `/docs-json`.
 
 ## Endpoints
 
@@ -74,12 +77,26 @@ The API runs on `http://localhost:3000`.
 
 The response is `{ data, meta }`, where `meta` holds `page`, `limit`, `total` and `totalPages`.
 
+Every error uses one format:
+
+```json
+{
+  "statusCode": 404,
+  "error": "Not Found",
+  "message": "Patient 22 not found",
+  "path": "/patients/22",
+  "timestamp": "2026-11-12T16:46:28.193Z"
+}
+```
+
+Validation errors (400) set `message` to `"Validation failed"` and list each problem in `details`.
+
 ## Roadmap
 
 - [x] PostgreSQL in Docker Compose
 - [x] Patients / Doctors / Appointments CRUD with Prisma
 - [x] Validation, pagination & filtering
-- [ ] Consistent error responses, Swagger docs
+- [x] Consistent error responses, Swagger docs
 - [ ] Auth: JWT + refresh token, role-based access (admin / doctor / staff)
 - [ ] Double-booking prevention with database transactions
 - [ ] Real-time queue via WebSocket

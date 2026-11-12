@@ -35,7 +35,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 - [x] **Day 11** · 2026-11-08 — Relation 1-N และ N-N → API doctors และ appointments
 - [x] **Day 12** · 2026-11-09 — Pagination, filter, search, sort → GET /appointments?date=&doctorId=&page=
 - [x] **Day 13** · 2026-11-10 — Global exception filter → ทุก error ตอบกลับในรูปแบบเดียวกัน
-- [ ] **Day 14** · 2026-11-11 — Swagger (OpenAPI) → มีหน้า API docs ที่ /docs
+- [x] **Day 14** · 2026-11-11 — Swagger (OpenAPI) → มีหน้า API docs ที่ /docs
 
 ## สัปดาห์ที่ 3: Auth, Security, Business Logic
 - [ ] **Day 15** · 2026-11-12 — Hash รหัสผ่านด้วย bcrypt, register/login → POST /auth/login
