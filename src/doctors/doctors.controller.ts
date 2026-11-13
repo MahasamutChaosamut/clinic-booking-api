@@ -12,11 +12,7 @@ import { DoctorsService } from './doctors.service.js';
 import { CreateDoctorDto } from './dto/create-doctor.dto.js';
 import type { Doctor } from '../generated/prisma/client.js';
 import { UpdateDoctorDto } from './dto/update-doctor.dto.js';
-import {
-  ApiBadRequestResponse,
-  ApiConflictResponse,
-  ApiNotFoundResponse,
-} from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 import { ErrorResponseDto } from '../common/dto/error-response.dto.js';
 
 @Controller('doctors')

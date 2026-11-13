@@ -16,11 +16,7 @@ import type { Appointment } from '../generated/prisma/client.js';
 import { CreateAppointmentDto } from './dto/create-appointment.dto.js';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto.js';
 import { FindAppointmentsQueryDto } from './dto/find-appointments-query.dto.js';
-import {
-  ApiBadRequestResponse,
-  ApiConflictResponse,
-  ApiNotFoundResponse,
-} from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 import { ErrorResponseDto } from '../common/dto/error-response.dto.js';
 
 @Controller('appointments')
