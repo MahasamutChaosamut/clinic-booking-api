@@ -9,6 +9,7 @@ import { RegisterDto } from './dto/register.dto.js';
 import type { User } from '../generated/prisma/client.js';
 import { ErrorResponseDto } from '../common/dto/error-response.dto.js';
 import { LoginDto } from './dto/login.dto.js';
+import { RefreshDto } from './dto/refresh.dto.js';
 
 @Controller('auth')
 export class AuthController {
@@ -25,7 +26,19 @@ export class AuthController {
   @HttpCode(200)
   @ApiBadRequestResponse({ type: ErrorResponseDto })
   @ApiUnauthorizedResponse({ type: ErrorResponseDto })
-  login(@Body() dto: LoginDto): Promise<Omit<User, 'passwordHash'>> {
+  login(
+    @Body() dto: LoginDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     return this.authService.login(dto);
+  }
+
+  @Post('refresh')
+  @HttpCode(200)
+  @ApiBadRequestResponse({ type: ErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ErrorResponseDto })
+  refresh(
+    @Body() dto: RefreshDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    return this.authService.refresh(dto);
   }
 }

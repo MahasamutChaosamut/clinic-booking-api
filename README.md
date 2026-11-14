@@ -42,7 +42,7 @@ npm run start:dev
 
 The API runs on `http://localhost:3000`.
 
-> Login currently returns the user without a token; JWT access/refresh tokens come next. `/auth/register` is open for now and will become admin-only once roles are enforced.
+> Login returns a short-lived access token (15 min) and a refresh token (7 days). Refresh tokens are stored as SHA-256 hashes and rotated on every use. Routes are not protected yet; guards and roles come next. `/auth/register` is open for now and will become admin-only once roles are enforced.
 
 Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the raw OpenAPI JSON is at `/docs-json`.
 
@@ -51,7 +51,8 @@ Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the r
 | Method | Path | Description |
 |---|---|---|
 | POST | `/auth/register` | Create a staff account (password hashed with bcrypt; 409 if the email exists) |
-| POST | `/auth/login` | Check email and password (401 with one message for any failure) |
+| POST | `/auth/login` | Check email and password; returns `accessToken` and `refreshToken` (401 with one message for any failure) |
+| POST | `/auth/refresh` | Exchange a refresh token for a new token pair; the old refresh token is revoked |
 | GET | `/patients` | List patients |
 | GET | `/patients/:id` | Get one patient |
 | GET | `/patients/:id/appointments` | List a patient's appointments with doctor details |
