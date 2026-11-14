@@ -38,7 +38,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 - [x] **Day 14** · 2026-11-11 — Swagger (OpenAPI) → มีหน้า API docs ที่ /docs
 
 ## สัปดาห์ที่ 3: Auth, Security, Business Logic
-- [ ] **Day 15** · 2026-11-12 — Hash รหัสผ่านด้วย bcrypt, register/login → POST /auth/login
+- [x] **Day 15** · 2026-11-12 — Hash รหัสผ่านด้วย bcrypt, register/login → POST /auth/login
 - [ ] **Day 16** · 2026-11-13 — JWT access token + refresh token → ต่ออายุ token ได้
 - [ ] **Day 17** · 2026-11-14 — Guard + RBAC (admin / doctor / staff) → แต่ละ role เข้าได้เฉพาะ API ของตัวเอง
 - [ ] **Day 18** · 2026-11-15 — Transaction: กันการจองซ้อน → จองช่วงเวลาเดียวกันพร้อมกัน 2 คนแล้วสำเร็จแค่คนเดียว

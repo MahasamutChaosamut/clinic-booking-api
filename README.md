@@ -42,12 +42,16 @@ npm run start:dev
 
 The API runs on `http://localhost:3000`.
 
+> Login currently returns the user without a token; JWT access/refresh tokens come next. `/auth/register` is open for now and will become admin-only once roles are enforced.
+
 Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the raw OpenAPI JSON is at `/docs-json`.
 
 ## Endpoints
 
 | Method | Path | Description |
 |---|---|---|
+| POST | `/auth/register` | Create a staff account (password hashed with bcrypt; 409 if the email exists) |
+| POST | `/auth/login` | Check email and password (401 with one message for any failure) |
 | GET | `/patients` | List patients |
 | GET | `/patients/:id` | Get one patient |
 | GET | `/patients/:id/appointments` | List a patient's appointments with doctor details |
