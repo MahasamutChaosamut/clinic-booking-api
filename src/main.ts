@@ -19,6 +19,7 @@ async function bootstrap() {
     .setTitle('Clinic Booking API')
     .setDescription('Patients, doctors and appointments')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

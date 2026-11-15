@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { Prisma, type User } from '../generated/prisma/client.js';
-import { Role } from '../generated/prisma/enums.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
@@ -33,7 +32,7 @@ export class AuthService {
 
     try {
       return await this.prismaService.user.create({
-        data: { email, passwordHash, role: Role.staff },
+        data: { email, passwordHash, role: dto.role },
         omit: { passwordHash: true },
       });
     } catch (error) {

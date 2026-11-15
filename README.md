@@ -42,7 +42,20 @@ npm run start:dev
 
 The API runs on `http://localhost:3000`.
 
-> Login returns a short-lived access token (15 min) and a refresh token (7 days). Refresh tokens are stored as SHA-256 hashes and rotated on every use. Routes are not protected yet; guards and roles come next. `/auth/register` is open for now and will become admin-only once roles are enforced.
+> Login returns a short-lived access token (15 min) and a refresh token (7 days). Refresh tokens are stored as SHA-256 hashes and rotated on every use.
+>
+> Every route except login and refresh needs `Authorization: Bearer <accessToken>`. Access is role-based (admin / doctor / staff) and denied by default: a route without a `@Roles` rule rejects everyone. Missing or invalid token returns 401; a valid token with the wrong role returns 403. In Swagger, click **Authorize** and paste the access token.
+>
+> Only an admin can create accounts, so the first admin is created directly in the database (a seed script is planned):
+>
+> ```bash
+> # 1. Hash a password of your choice
+> node -e "console.log(require('bcrypt').hashSync('change-me-123', 10))"
+> # 2. Insert the admin with that hash (the quoted heredoc stops the shell expanding the $ signs in the hash)
+> docker compose exec -T postgres psql -U clinic -d clinic_booking <<'SQL'
+> INSERT INTO users (email, password_hash, role) VALUES ('admin@example.com', '<hash from step 1>', 'admin');
+> SQL
+> ```
 
 Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the raw OpenAPI JSON is at `/docs-json`.
 
@@ -50,7 +63,7 @@ Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the r
 
 | Method | Path | Description |
 |---|---|---|
-| POST | `/auth/register` | Create a staff account (password hashed with bcrypt; 409 if the email exists) |
+| POST | `/auth/register` | Admin only. Create an account with a role (password hashed with bcrypt; 409 if the email exists) |
 | POST | `/auth/login` | Check email and password; returns `accessToken` and `refreshToken` (401 with one message for any failure) |
 | POST | `/auth/refresh` | Exchange a refresh token for a new token pair; the old refresh token is revoked |
 | GET | `/patients` | List patients |

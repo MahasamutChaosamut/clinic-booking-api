@@ -40,7 +40,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 ## สัปดาห์ที่ 3: Auth, Security, Business Logic
 - [x] **Day 15** · 2026-11-12 — Hash รหัสผ่านด้วย bcrypt, register/login → POST /auth/login
 - [x] **Day 16** · 2026-11-13 — JWT access token + refresh token → ต่ออายุ token ได้
-- [ ] **Day 17** · 2026-11-14 — Guard + RBAC (admin / doctor / staff) → แต่ละ role เข้าได้เฉพาะ API ของตัวเอง
+- [x] **Day 17** · 2026-11-14 — Guard + RBAC (admin / doctor / staff) → แต่ละ role เข้าได้เฉพาะ API ของตัวเอง
 - [ ] **Day 18** · 2026-11-15 — Transaction: กันการจองซ้อน → จองช่วงเวลาเดียวกันพร้อมกัน 2 คนแล้วสำเร็จแค่คนเดียว
 - [ ] **Day 19** · 2026-11-16 — WebSocket Gateway: คิว realtime → เรียกคิวแล้ว client อัปเดตทันที
 - [ ] **Day 20** · 2026-11-17 — OWASP พื้นฐาน: SQL injection, helmet, CORS, rate limit → ใส่ helmet และ throttler
