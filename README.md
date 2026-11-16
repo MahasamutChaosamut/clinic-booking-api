@@ -79,7 +79,7 @@ Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the r
 | DELETE | `/doctors/:id` | Soft delete a doctor |
 | GET | `/appointments` | List appointments with filters and pagination (see below) |
 | GET | `/appointments/:id` | Get one appointment with patient and doctor |
-| POST | `/appointments` | Book an appointment |
+| POST | `/appointments` | Book an appointment on a 30-minute slot (409 if the doctor or the patient is already booked then) |
 | PATCH | `/appointments/:id` | Change patient, doctor or status |
 
 `GET /appointments` query parameters (all optional):
@@ -94,6 +94,12 @@ Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the r
 | `limit` | `20` | Default `10`, max `100` |
 
 The response is `{ data, meta }`, where `meta` holds `page`, `limit`, `total` and `totalPages`.
+
+Double booking is blocked by the database, not by a check in the code: two partial unique indexes allow only one active (not cancelled) appointment per doctor per time and per patient per time. Concurrent requests for the same slot get one `201` and the rest `409`. To see it, log in and run:
+
+```bash
+node scripts/race-booking.mjs <accessToken>
+```
 
 Every error uses one format:
 
@@ -116,7 +122,7 @@ Validation errors (400) set `message` to `"Validation failed"` and list each pro
 - [x] Validation, pagination & filtering
 - [x] Consistent error responses, Swagger docs
 - [ ] Auth: JWT + refresh token, role-based access (admin / doctor / staff)
-- [ ] Double-booking prevention with database transactions
+- [x] Double-booking prevention (partial unique indexes, concurrency-tested)
 - [ ] Real-time queue via WebSocket
 - [ ] Unit + E2E tests, CI with GitHub Actions
 - [ ] Deployed demo

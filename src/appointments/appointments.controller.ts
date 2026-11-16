@@ -20,6 +20,7 @@ import { FindAppointmentsQueryDto } from './dto/find-appointments-query.dto.js';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiConflictResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiUnauthorizedResponse,
@@ -55,6 +56,7 @@ export class AppointmentsController {
 
   @Roles(['admin', 'staff'])
   @Post()
+  @ApiConflictResponse({ type: ErrorResponseDto })
   @ApiBadRequestResponse({ type: ErrorResponseDto })
   @ApiNotFoundResponse({ type: ErrorResponseDto })
   create(
@@ -66,6 +68,7 @@ export class AppointmentsController {
   @Patch(':id')
   @ApiBadRequestResponse({ type: ErrorResponseDto })
   @ApiNotFoundResponse({ type: ErrorResponseDto })
+  @ApiConflictResponse({ type: ErrorResponseDto })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateAppointmentDto: UpdateAppointmentDto,

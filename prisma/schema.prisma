@@ -1,6 +1,8 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
+    previewFeatures = ["partialIndexes"]
+
 }
 
 datasource db {
@@ -47,6 +49,9 @@ model Appointment {
 
   @@index([patientId, appointmentAt])
   @@index([doctorId, appointmentAt])
+    @@unique([doctorId, appointmentAt], where: raw("status <> 'cancelled'"))
+    @@unique([patientId, appointmentAt], where: raw("status <> 'cancelled'"))
+
   @@map("appointments")
 }
 

@@ -1,11 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PatientsService } from '../patients/patients.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { DoctorsService } from '../doctors/doctors.service.js';
-import type { Appointment } from '../generated/prisma/client.js';
+import { Prisma, type Appointment } from '../generated/prisma/client.js';
 import { CreateAppointmentDto } from './dto/create-appointment.dto.js';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto.js';
 import { FindAppointmentsQueryDto } from './dto/find-appointments-query.dto.js';
+
+const SLOT_MINUTES = 30;
 
 export interface PaginatedAppointments {
   data: Appointment[];
@@ -66,17 +73,37 @@ export class AppointmentsService {
   async create(
     createAppointmentDto: CreateAppointmentDto,
   ): Promise<Appointment> {
+    const appointmentAt = new Date(createAppointmentDto.appointmentAt);
+    if (
+      appointmentAt.getUTCMinutes() % SLOT_MINUTES !== 0 ||
+      appointmentAt.getUTCSeconds() !== 0 ||
+      appointmentAt.getUTCMilliseconds() !== 0
+    ) {
+      throw new BadRequestException(
+        `appointmentAt must start on a ${SLOT_MINUTES}-minute slot, e.g. 09:00 or 09:30`,
+      );
+    }
     await this.patientsService.findOne(createAppointmentDto.patientId);
     await this.doctorsService.findOne(createAppointmentDto.doctorId);
 
-    const appointment = await this.prismaService.appointment.create({
-      data: {
-        ...createAppointmentDto,
-        appointmentAt: new Date(createAppointmentDto.appointmentAt),
-      },
-    });
-
-    return appointment;
+    try {
+      return await this.prismaService.appointment.create({
+        data: {
+          ...createAppointmentDto,
+          appointmentAt,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'The doctor or the patient already has an appointment at this time',
+        );
+      }
+      throw error;
+    }
   }
 
   async update(
@@ -90,11 +117,23 @@ export class AppointmentsService {
     if (updateAppointmentDto.doctorId !== undefined) {
       await this.doctorsService.findOne(updateAppointmentDto.doctorId);
     }
-    return await this.prismaService.appointment.update({
-      where: { id },
-      data: {
-        ...updateAppointmentDto,
-      },
-    });
+    try {
+      return await this.prismaService.appointment.update({
+        where: { id },
+        data: {
+          ...updateAppointmentDto,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'The doctor or the patient already has an appointment at this time',
+        );
+      }
+      throw error;
+    }
   }
 }
