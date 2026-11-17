@@ -42,7 +42,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 - [x] **Day 16** · 2026-11-13 — JWT access token + refresh token → ต่ออายุ token ได้
 - [x] **Day 17** · 2026-11-14 — Guard + RBAC (admin / doctor / staff) → แต่ละ role เข้าได้เฉพาะ API ของตัวเอง
 - [x] **Day 18** · 2026-11-15 — Transaction: กันการจองซ้อน → จองช่วงเวลาเดียวกันพร้อมกัน 2 คนแล้วสำเร็จแค่คนเดียว
-- [ ] **Day 19** · 2026-11-16 — WebSocket Gateway: คิว realtime → เรียกคิวแล้ว client อัปเดตทันที
+- [x] **Day 19** · 2026-11-16 — WebSocket Gateway: คิว realtime → เรียกคิวแล้ว client อัปเดตทันที
 - [ ] **Day 20** · 2026-11-17 — OWASP พื้นฐาน: SQL injection, helmet, CORS, rate limit → ใส่ helmet และ throttler
 - [ ] **Day 21** · 2026-11-18 — ทบทวนและ refactor → ไม่มี secret ในโค้ด อธิบาย JWT และการเก็บ refresh token ได้
 

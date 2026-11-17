@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset="utf-8" />
+<p id="status">กำลังเชื่อมต่อ...</p>
+<h1>คิวที่เรียก: <span id="number">-</span></h1>
+
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script>
+  const socket = io('http://localhost:3000');
+  socket.on(
+    'connect',
+    () => (document.getElementById('status').textContent = 'เชื่อมต่อแล้ว'),
+  );
+  socket.on(
+    'disconnect',
+    () =>
+      (document.getElementById('status').textContent = 'หลุด กำลังต่อใหม่...'),
+  );
+  socket.on(
+    'queue:called',
+    (data) =>
+      (document.getElementById('number').textContent = data.queueNumber),
+  );
+</script>

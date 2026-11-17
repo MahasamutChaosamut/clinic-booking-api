@@ -8,5 +8,6 @@ import { DoctorsModule } from '../doctors/doctors.module.js';
   imports: [PatientsModule, DoctorsModule],
   controllers: [AppointmentsController],
   providers: [AppointmentsService],
+  exports: [AppointmentsService],
 })
 export class AppointmentsModule {}
