@@ -7,7 +7,11 @@ import {
 import { PatientsService } from '../patients/patients.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { DoctorsService } from '../doctors/doctors.service.js';
-import { Prisma, type Appointment } from '../generated/prisma/client.js';
+import {
+  AppointmentStatus,
+  Prisma,
+  type Appointment,
+} from '../generated/prisma/client.js';
 import { CreateAppointmentDto } from './dto/create-appointment.dto.js';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto.js';
 import { FindAppointmentsQueryDto } from './dto/find-appointments-query.dto.js';
@@ -110,7 +114,13 @@ export class AppointmentsService {
     id: number,
     updateAppointmentDto: UpdateAppointmentDto,
   ): Promise<Appointment> {
-    await this.findOne(id);
+    const existing = await this.findOne(id);
+    if (existing.status !== AppointmentStatus.booked) {
+      throw new BadRequestException(
+        `Appointment ${id} is ${existing.status} and cannot be changed`,
+      );
+    }
+
     if (updateAppointmentDto.patientId !== undefined) {
       await this.patientsService.findOne(updateAppointmentDto.patientId);
     }

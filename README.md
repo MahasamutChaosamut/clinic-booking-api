@@ -19,7 +19,7 @@ A REST API for a clinic appointment system: patients, doctors, appointments and 
 Requirements: Node.js 20+, Docker.
 
 ```bash
-# 1. Environment variables
+# 1. Environment variables (the app refuses to start if DATABASE_URL or a JWT secret is missing)
 cp .env.example .env
 
 # 2. Start PostgreSQL
@@ -80,7 +80,7 @@ Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the r
 | GET | `/appointments` | List appointments with filters and pagination (see below) |
 | GET | `/appointments/:id` | Get one appointment with patient and doctor |
 | POST | `/appointments` | Book an appointment on a 30-minute slot (409 if the doctor or the patient is already booked then) |
-| PATCH | `/appointments/:id` | Change patient, doctor or status |
+| PATCH | `/appointments/:id` | Change patient, doctor or status (400 once completed, cancelled or no-show) |
 | POST | `/queue` | Check in a booked appointment and get today's next queue number (409 if already checked in) |
 | PATCH | `/queue/:id/call` | Call a queue number; every connected display receives `queue:called` over WebSocket |
 

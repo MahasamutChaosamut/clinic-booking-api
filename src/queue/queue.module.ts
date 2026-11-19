@@ -8,6 +8,5 @@ import { QueueController } from './queue.controller.js';
   imports: [AppointmentsModule],
   providers: [QueueGateway, QueueService],
   controllers: [QueueController],
-  exports: [QueueService],
 })
 export class QueueModule {}

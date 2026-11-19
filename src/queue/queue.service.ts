@@ -22,7 +22,7 @@ export class QueueService {
     private readonly queueGateway: QueueGateway,
   ) {}
 
-  async findQueueByAppointmentId(appointmentId: number) {
+  async ensureNotCheckedIn(appointmentId: number) {
     const existingQueue = await this.prismaService.queue.findUnique({
       where: { appointmentId },
     });
@@ -34,7 +34,7 @@ export class QueueService {
   }
 
   async checkIn(appointmentId: number, attempt = 1): Promise<Queue> {
-    await this.findQueueByAppointmentId(appointmentId);
+    await this.ensureNotCheckedIn(appointmentId);
     const appointment = await this.appointmentService.findOne(appointmentId);
     if (appointment.status !== AppointmentStatus.booked) {
       throw new BadRequestException(

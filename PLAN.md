@@ -44,7 +44,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 - [x] **Day 18** · 2026-11-15 — Transaction: กันการจองซ้อน → จองช่วงเวลาเดียวกันพร้อมกัน 2 คนแล้วสำเร็จแค่คนเดียว
 - [x] **Day 19** · 2026-11-16 — WebSocket Gateway: คิว realtime → เรียกคิวแล้ว client อัปเดตทันที
 - [ ] **Day 20** · 2026-11-17 — OWASP พื้นฐาน: SQL injection, helmet, CORS, rate limit → ใส่ helmet และ throttler
-- [ ] **Day 21** · 2026-11-18 — ทบทวนและ refactor → ไม่มี secret ในโค้ด อธิบาย JWT และการเก็บ refresh token ได้
+- [x] **Day 21** · 2026-11-18 — ทบทวนและ refactor → ไม่มี secret ในโค้ด อธิบาย JWT และการเก็บ refresh token ได้
 
 ## สัปดาห์ที่ 4: Test, Docker, Deploy
 - [ ] **Day 22** · 2026-11-19 — Unit test ด้วย Vitest: พื้นฐานและการ mock → test แรกผ่าน
