@@ -15,6 +15,7 @@ import { RefreshDto } from './dto/refresh.dto.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 import { RolesGuard } from './guards/roles.guard.js';
 import { Roles } from './decorators/roles.decorator.js';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiUnauthorizedResponse({ type: ErrorResponseDto })
 @Controller('auth')
@@ -32,6 +33,7 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
+  @Throttle({ default: { ttl: 60_000, limit: 5 } })
   @Post('login')
   @HttpCode(200)
   @ApiBadRequestResponse({ type: ErrorResponseDto })

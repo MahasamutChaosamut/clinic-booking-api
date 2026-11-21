@@ -4,6 +4,8 @@ import { AppModule } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
+import { corsOrigins } from './common/cors-origins.js';
 
 async function bootstrap() {
   const REQUIRED_ENV = [
@@ -17,6 +19,9 @@ async function bootstrap() {
   }
 
   const app = await NestFactory.create(AppModule);
+  app.use(helmet());
+  app.enableCors({ origin: corsOrigins() });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

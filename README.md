@@ -103,7 +103,12 @@ Double booking is blocked by the database, not by a check in the code: two parti
 node scripts/race-booking.mjs <accessToken>
 ```
 
-Queue displays connect with Socket.IO on the same port and listen for the `queue:called` event. Open `scripts/queue-display.html` in a browser while the API runs, then call a queue number to see it update.
+Queue displays connect with Socket.IO on the same port and listen for the `queue:called` event. The socket only accepts origins listed in `CORS_ORIGINS`, so serve the page over HTTP instead of opening the file directly (a `file://` page has origin `null` and is rejected):
+
+```bash
+npx http-server scripts -p 5500
+# then open http://localhost:5500/queue-display.html and call a queue number
+```
 
 Every error uses one format:
 
@@ -119,13 +124,24 @@ Every error uses one format:
 
 Validation errors (400) set `message` to `"Validation failed"` and list each problem in `details`.
 
+## Security
+
+- **Headers:** `helmet` adds security headers (CSP, HSTS, `X-Frame-Options`, `nosniff`) and removes `X-Powered-By`.
+- **CORS:** only origins in `CORS_ORIGINS` (comma-separated) may call the API or open the queue socket from a browser. With the variable unset, no cross-origin browser access is allowed.
+- **Rate limiting:** every route allows 100 requests per minute per IP; `POST /auth/login` allows 5. Over the limit returns `429` with `Retry-After`.
+- **SQL injection:** all queries go through Prisma's query builder, which sends values as parameters; there are no raw SQL queries.
+- **Startup check:** the app refuses to start if `DATABASE_URL` or a JWT secret is missing.
+
+Not done yet: per-account lockout or CAPTCHA after repeated failed logins (the per-IP limit alone does not stop an attacker using many IPs), reuse detection for refresh tokens, and 2FA.
+
 ## Roadmap
 
 - [x] PostgreSQL in Docker Compose
 - [x] Patients / Doctors / Appointments CRUD with Prisma
 - [x] Validation, pagination & filtering
 - [x] Consistent error responses, Swagger docs
-- [ ] Auth: JWT + refresh token, role-based access (admin / doctor / staff)
+- [x] Auth: JWT + refresh token, role-based access (admin / doctor / staff)
+- [x] Security basics: helmet, CORS allowlist, rate limiting
 - [x] Double-booking prevention (partial unique indexes, concurrency-tested)
 - [x] Real-time queue via WebSocket (Socket.IO)
 - [ ] Unit + E2E tests, CI with GitHub Actions
