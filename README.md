@@ -11,7 +11,7 @@ A REST API for a clinic appointment system: patients, doctors, appointments and 
 - **Database:** PostgreSQL 17 (Docker Compose), Prisma 7
 - **Validation:** class-validator, class-transformer
 - **API docs:** OpenAPI via @nestjs/swagger (CLI plugin)
-- **Testing:** Vitest, Supertest *(planned)*
+- **Testing:** Vitest (unit tests with mocked dependencies), Supertest *(planned)*
 - **Tooling:** Docker, GitHub Actions *(planned)*
 
 ## Getting started
@@ -56,6 +56,8 @@ The API runs on `http://localhost:3000`.
 > INSERT INTO users (email, password_hash, role) VALUES ('admin@example.com', '<hash from step 1>', 'admin');
 > SQL
 > ```
+
+Run the unit tests with `npm test` (no database needed: dependencies such as Prisma are replaced with mocks).
 
 Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the raw OpenAPI JSON is at `/docs-json`.
 

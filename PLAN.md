@@ -47,7 +47,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 - [x] **Day 21** · 2026-11-18 — ทบทวนและ refactor → ไม่มี secret ในโค้ด อธิบาย JWT และการเก็บ refresh token ได้
 
 ## สัปดาห์ที่ 4: Test, Docker, Deploy
-- [ ] **Day 22** · 2026-11-19 — Unit test ด้วย Vitest: พื้นฐานและการ mock → test แรกผ่าน
+- [x] **Day 22** · 2026-11-19 — Unit test ด้วย Vitest: พื้นฐานและการ mock → test แรกผ่าน
 - [ ] **Day 23** · 2026-11-20 — Unit test ของ service หลัก (appointments, auth) → test ครอบ logic สำคัญ
 - [ ] **Day 24** · 2026-11-21 — E2E test ด้วย supertest → test flow login แล้วจองนัด
 - [ ] **Day 25** · 2026-11-22 — Dockerfile + เพิ่ม api เข้า docker-compose → รันทั้งระบบด้วย docker compose up
