@@ -11,7 +11,7 @@ A REST API for a clinic appointment system: patients, doctors, appointments and 
 - **Database:** PostgreSQL 17 (Docker Compose), Prisma 7
 - **Validation:** class-validator, class-transformer
 - **API docs:** OpenAPI via @nestjs/swagger (CLI plugin)
-- **Testing:** Vitest (unit tests with mocked dependencies), Supertest *(planned)*
+- **Testing:** Vitest (unit tests with mocked dependencies), Supertest (E2E tests against a real Postgres test database)
 - **Tooling:** Docker, GitHub Actions *(planned)*
 
 ## Getting started
@@ -58,6 +58,14 @@ The API runs on `http://localhost:3000`.
 > ```
 
 Run the unit tests with `npm test` (no database needed: dependencies such as Prisma are replaced with mocks).
+
+The E2E tests start the whole app and send real HTTP requests to a separate database, `clinic_booking_test`, which is wiped at the start of each test file. Create it once, then run the tests:
+
+```bash
+docker compose exec postgres psql -U clinic -d postgres -c "CREATE DATABASE clinic_booking_test;"
+DATABASE_URL="postgresql://clinic:clinic@localhost:5432/clinic_booking_test?schema=public" npx prisma migrate deploy
+npm run test:e2e
+```
 
 Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the raw OpenAPI JSON is at `/docs-json`.
 
@@ -146,7 +154,8 @@ Not done yet: per-account lockout or CAPTCHA after repeated failed logins (the p
 - [x] Security basics: helmet, CORS allowlist, rate limiting
 - [x] Double-booking prevention (partial unique indexes, concurrency-tested)
 - [x] Real-time queue via WebSocket (Socket.IO)
-- [ ] Unit + E2E tests, CI with GitHub Actions
+- [x] Unit + E2E tests (Vitest, Supertest)
+- [ ] CI with GitHub Actions
 - [ ] Deployed demo
 
 Development log: [PLAN.md](PLAN.md)

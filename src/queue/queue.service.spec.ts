@@ -85,11 +85,11 @@ describe('QueueService', () => {
     prisma.queue.findUnique.mockResolvedValue(null);
     appointments.findOne.mockResolvedValue({ id: 38, status: 'booked' });
     prisma.queue.aggregate
-      .mockResolvedValueOnce({ _max: { queueNumber: 4 } }) // 1st try sees 4 as the highest
-      .mockResolvedValueOnce({ _max: { queueNumber: 5 } }); // 2nd try: another check-in already took 5
+      .mockResolvedValueOnce({ _max: { queueNumber: 4 } })
+      .mockResolvedValueOnce({ _max: { queueNumber: 5 } });
     prisma.queue.create
-      .mockRejectedValueOnce(p2002) // 1st try: 5 is taken
-      .mockResolvedValueOnce({ id: 11, queueNumber: 6 }); // 2nd try: 6 succeeds
+      .mockRejectedValueOnce(p2002)
+      .mockResolvedValueOnce({ id: 11, queueNumber: 6 });
 
     await service.checkIn(38);
 
