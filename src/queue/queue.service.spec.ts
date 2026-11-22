@@ -3,17 +3,27 @@ import type { AppointmentsService } from '../appointments/appointments.service.j
 import type { PrismaService } from '../prisma/prisma.service.js';
 import type { QueueGateway } from './queue.gateway.js';
 import { QueueService } from './queue.service.js';
+import { Prisma } from '../generated/prisma/client.js';
 
 describe('QueueService', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
-  const prisma = { queue: { findUnique: vi.fn(), update: vi.fn() } };
+  const prisma = {
+    queue: {
+      findUnique: vi.fn(),
+      update: vi.fn(),
+      aggregate: vi.fn(),
+      create: vi.fn(),
+    },
+  };
+  const appointments = { findOne: vi.fn() };
+
   const gateway = { notifyCalled: vi.fn() };
   const service = new QueueService(
     prisma as unknown as PrismaService,
-    {} as AppointmentsService,
+    appointments as unknown as AppointmentsService,
     gateway as unknown as QueueGateway,
   );
 
@@ -40,5 +50,50 @@ describe('QueueService', () => {
 
     expect(result.status).toBe('called');
     expect(gateway.notifyCalled).toHaveBeenCalledWith(7);
+  });
+
+  it('creates the next queue number for today', async () => {
+    prisma.queue.findUnique.mockResolvedValue(null);
+    appointments.findOne.mockResolvedValue({ id: 38, status: 'booked' });
+    prisma.queue.aggregate.mockResolvedValue({ _max: { queueNumber: 4 } });
+    prisma.queue.create.mockResolvedValue({ id: 10, queueNumber: 5 });
+
+    await service.checkIn(38);
+
+    expect(prisma.queue.create.mock.calls[0][0].data.queueNumber).toBe(5);
+  });
+
+  it('starts at queue number 1 when there is no queue today', async () => {
+    prisma.queue.findUnique.mockResolvedValue(null);
+    appointments.findOne.mockResolvedValue({ id: 38, status: 'booked' });
+    prisma.queue.aggregate.mockResolvedValue({ _max: { queueNumber: null } });
+    prisma.queue.create.mockResolvedValue({ id: 1, queueNumber: 1 });
+
+    await service.checkIn(38);
+
+    expect(prisma.queue.create.mock.calls[0][0].data.queueNumber).toBe(1);
+  });
+
+  it('retries with a new number when another check-in took it first', async () => {
+    const p2002 = new Prisma.PrismaClientKnownRequestError(
+      'Unique constraint failed',
+      {
+        code: 'P2002',
+        clientVersion: 'test',
+      },
+    );
+    prisma.queue.findUnique.mockResolvedValue(null);
+    appointments.findOne.mockResolvedValue({ id: 38, status: 'booked' });
+    prisma.queue.aggregate
+      .mockResolvedValueOnce({ _max: { queueNumber: 4 } }) // 1st try sees 4 as the highest
+      .mockResolvedValueOnce({ _max: { queueNumber: 5 } }); // 2nd try: another check-in already took 5
+    prisma.queue.create
+      .mockRejectedValueOnce(p2002) // 1st try: 5 is taken
+      .mockResolvedValueOnce({ id: 11, queueNumber: 6 }); // 2nd try: 6 succeeds
+
+    await service.checkIn(38);
+
+    expect(prisma.queue.create).toHaveBeenCalledTimes(2);
+    expect(prisma.queue.create.mock.calls[1][0].data.queueNumber).toBe(6);
   });
 });
