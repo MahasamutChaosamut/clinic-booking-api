@@ -12,7 +12,7 @@ A REST API for a clinic appointment system: patients, doctors, appointments and 
 - **Validation:** class-validator, class-transformer
 - **API docs:** OpenAPI via @nestjs/swagger (CLI plugin)
 - **Testing:** Vitest (unit tests with mocked dependencies), Supertest (E2E tests against a real Postgres test database)
-- **Tooling:** Docker, GitHub Actions *(planned)*
+- **Tooling:** Docker (multi-stage image + Docker Compose), GitHub Actions *(planned)*
 
 ## Getting started
 
@@ -22,8 +22,8 @@ Requirements: Node.js 20+, Docker.
 # 1. Environment variables (the app refuses to start if DATABASE_URL or a JWT secret is missing)
 cp .env.example .env
 
-# 2. Start PostgreSQL
-docker compose up -d
+# 2. Start PostgreSQL only (the API runs on your machine in this mode)
+docker compose up -d postgres
 
 # 3. Install dependencies
 npm install
@@ -41,6 +41,20 @@ npm run start:dev
 ```
 
 The API runs on `http://localhost:3000`.
+
+### Run everything with Docker
+
+The repo includes a multi-stage `Dockerfile`: the first stage installs all dependencies, generates the Prisma Client and builds the app; the final image keeps only `dist/`, production dependencies and the migration files. Secrets are not baked into the image: Docker Compose passes them in from `.env` when the container starts.
+
+```bash
+cp .env.example .env          # if you haven't already
+docker compose up --build -d  # build the API image, start Postgres, then the API
+docker compose logs api       # follow the API logs
+```
+
+On startup the API container runs `prisma migrate deploy` and then `node dist/main.js`. It waits for the Postgres healthcheck to pass before starting. Inside Compose the API reaches the database by its service name (`postgres`), not `localhost`.
+
+To go back to running the API with `npm run start:dev`, stop the container first so port 3000 is free: `docker compose stop api`.
 
 > Login returns a short-lived access token (15 min) and a refresh token (7 days). Refresh tokens are stored as SHA-256 hashes and rotated on every use.
 >

@@ -50,7 +50,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 - [x] **Day 22** · 2026-11-19 — Unit test ด้วย Vitest: พื้นฐานและการ mock → test แรกผ่าน
 - [x] **Day 23** · 2026-11-20 — Unit test ของ service หลัก (appointments, auth) → test ครอบ logic สำคัญ
 - [x] **Day 24** · 2026-11-21 — E2E test ด้วย supertest → test flow login แล้วจองนัด
-- [ ] **Day 25** · 2026-11-22 — Dockerfile + เพิ่ม api เข้า docker-compose → รันทั้งระบบด้วย docker compose up
+- [x] **Day 25** · 2026-11-22 — Dockerfile + เพิ่ม api เข้า docker-compose → รันทั้งระบบด้วย docker compose up
 - [ ] **Day 26** · 2026-11-23 — GitHub Actions CI: lint + test + build → ได้ badge สีเขียวใน README
 - [ ] **Day 27** · 2026-11-24 — Deploy ขึ้น Render, Railway หรือ Fly.io → มี URL ใช้งานจริง
 - [ ] **Day 28** · 2026-11-25 — Logging (pino) + health check → GET /health
