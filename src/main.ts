@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import type { Request, Response, NextFunction } from 'express';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common';
@@ -19,6 +20,11 @@ async function bootstrap() {
   }
 
   const app = await NestFactory.create(AppModule);
+  // TEMP: measure proxy hops on Render, remove after
+  app.use((req: Request, _res: Response, next: NextFunction) => {
+    console.log('xff=', req.headers['x-forwarded-for'], 'ip=', req.ip);
+    next();
+  });
   app.use(helmet());
   app.enableCors({ origin: corsOrigins() });
 
