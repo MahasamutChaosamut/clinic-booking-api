@@ -52,7 +52,7 @@ npm run start:dev        # รัน API ที่ http://localhost:3000
 - [x] **Day 24** · 2026-11-21 — E2E test ด้วย supertest → test flow login แล้วจองนัด
 - [x] **Day 25** · 2026-11-22 — Dockerfile + เพิ่ม api เข้า docker-compose → รันทั้งระบบด้วย docker compose up
 - [x] **Day 26** · 2026-11-23 — GitHub Actions CI: lint + test + build → ได้ badge สีเขียวใน README
-- [ ] **Day 27** · 2026-11-24 — Deploy ขึ้น Render, Railway หรือ Fly.io → มี URL ใช้งานจริง
+- [x] **Day 27** · 2026-11-24 — Deploy ขึ้น Render, Railway หรือ Fly.io → มี URL ใช้งานจริง
 - [ ] **Day 28** · 2026-11-25 — Logging (pino) + health check → GET /health
 - [ ] **Day 29** · 2026-11-26 — README: สถาปัตยกรรม, ER, วิธีรัน, ลิงก์ demo → README ที่ HR และหัวหน้าทีมอ่านเข้าใจ
 - [ ] **Day 30** · 2026-11-27 — อัปเดต CV และซ้อมเล่าโปรเจกต์ 3 นาที → CV ใหม่ใส่ลิงก์โปรเจกต์

@@ -4,6 +4,8 @@
 
 A REST API for a clinic appointment system: patients, doctors, appointments and a real-time waiting queue.
 
+**Live demo:** [clinic-booking-api-bhe5.onrender.com/docs](https://clinic-booking-api-bhe5.onrender.com/docs) (Swagger UI). It runs on a free instance that sleeps when idle, so the first request can take up to a minute.
+
 > 🚧 **Work in progress.** Built step by step over 30 days. See the [Roadmap](#roadmap) for the current status.
 
 ## Tech stack
@@ -57,6 +59,14 @@ docker compose logs api       # follow the API logs
 On startup the API container runs `prisma migrate deploy` and then `node dist/main.js`. It waits for the Postgres healthcheck to pass before starting. Inside Compose the API reaches the database by its service name (`postgres`), not `localhost`.
 
 To go back to running the API with `npm run start:dev`, stop the container first so port 3000 is free: `docker compose stop api`.
+
+### Deployment
+
+The demo runs on [Render](https://render.com) with the database on [Neon](https://neon.com) (managed Postgres, Singapore region):
+
+- Render builds the same `Dockerfile` from `main` on every push. Migrations run automatically when the container starts.
+- Secrets (`DATABASE_URL`, both JWT secrets) are set in Render's environment settings, not in the repo. The production JWT secrets are separate from any local ones.
+- Requests reach the app through 3 proxies (Cloudflare and Render's load balancers), so `TRUST_PROXY_HOPS=3` tells Express how many `X-Forwarded-For` entries to trust. Rate limiting then counts the real client IP, and a client can't dodge it by sending a fake `X-Forwarded-For`. Locally the value is `0`: no proxy, header ignored.
 
 > Login returns a short-lived access token (15 min) and a refresh token (7 days). Refresh tokens are stored as SHA-256 hashes and rotated on every use.
 >
@@ -156,7 +166,7 @@ Validation errors (400) set `message` to `"Validation failed"` and list each pro
 
 - **Headers:** `helmet` adds security headers (CSP, HSTS, `X-Frame-Options`, `nosniff`) and removes `X-Powered-By`.
 - **CORS:** only origins in `CORS_ORIGINS` (comma-separated) may call the API or open the queue socket from a browser. With the variable unset, no cross-origin browser access is allowed.
-- **Rate limiting:** every route allows 100 requests per minute per IP; `POST /auth/login` allows 5. Over the limit returns `429` with `Retry-After`.
+- **Rate limiting:** every route allows 100 requests per minute per IP; `POST /auth/login` allows 5. Over the limit returns `429` with `Retry-After`. Behind a reverse proxy the client IP comes from a fixed number of trusted `X-Forwarded-For` hops (`TRUST_PROXY_HOPS`), so spoofed headers don't reset the count.
 - **SQL injection:** all queries go through Prisma's query builder, which sends values as parameters; there are no raw SQL queries.
 - **Startup check:** the app refuses to start if `DATABASE_URL` or a JWT secret is missing.
 
@@ -174,6 +184,6 @@ Not done yet: per-account lockout or CAPTCHA after repeated failed logins (the p
 - [x] Real-time queue via WebSocket (Socket.IO)
 - [x] Unit + E2E tests (Vitest, Supertest)
 - [x] CI with GitHub Actions (lint, unit, build, E2E)
-- [ ] Deployed demo
+- [x] Deployed demo (Render + Neon)
 
 Development log: [PLAN.md](PLAN.md)
