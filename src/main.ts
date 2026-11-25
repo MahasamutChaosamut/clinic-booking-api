@@ -7,6 +7,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { corsOrigins } from './common/cors-origins.js';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const REQUIRED_ENV = [
@@ -19,7 +20,8 @@ async function bootstrap() {
     throw new Error(`Missing environment variables: ${missing.join(', ')}`);
   }
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.set('trust proxy', Number(process.env.TRUST_PROXY_HOPS ?? 0));
   // TEMP: measure proxy hops on Render, remove after
   app.use((req: Request, _res: Response, next: NextFunction) => {
     console.log('xff=', req.headers['x-forwarded-for'], 'ip=', req.ip);
