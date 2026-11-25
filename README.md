@@ -1,5 +1,7 @@
 # Clinic Booking API
 
+[![CI](https://github.com/MahasamutChaosamut/clinic-booking-api/actions/workflows/ci.yml/badge.svg)](https://github.com/MahasamutChaosamut/clinic-booking-api/actions/workflows/ci.yml)
+
 A REST API for a clinic appointment system: patients, doctors, appointments and a real-time waiting queue.
 
 > 🚧 **Work in progress.** Built step by step over 30 days. See the [Roadmap](#roadmap) for the current status.
@@ -12,7 +14,7 @@ A REST API for a clinic appointment system: patients, doctors, appointments and 
 - **Validation:** class-validator, class-transformer
 - **API docs:** OpenAPI via @nestjs/swagger (CLI plugin)
 - **Testing:** Vitest (unit tests with mocked dependencies), Supertest (E2E tests against a real Postgres test database)
-- **Tooling:** Docker (multi-stage image + Docker Compose), GitHub Actions *(planned)*
+- **Tooling:** Docker (multi-stage image + Docker Compose), GitHub Actions CI
 
 ## Getting started
 
@@ -81,43 +83,45 @@ DATABASE_URL="postgresql://clinic:clinic@localhost:5432/clinic_booking_test?sche
 npm run test:e2e
 ```
 
+GitHub Actions runs lint, the unit tests, the build and the E2E tests on every push and pull request to `main` ([workflow](.github/workflows/ci.yml)). The E2E job gets its own throwaway Postgres as a service container, so CI needs no secrets.
+
 Interactive API docs (Swagger UI) are at `http://localhost:3000/docs`, and the raw OpenAPI JSON is at `/docs-json`.
 
 ## Endpoints
 
-| Method | Path | Description |
-|---|---|---|
-| POST | `/auth/register` | Admin only. Create an account with a role (password hashed with bcrypt; 409 if the email exists) |
-| POST | `/auth/login` | Check email and password; returns `accessToken` and `refreshToken` (401 with one message for any failure) |
-| POST | `/auth/refresh` | Exchange a refresh token for a new token pair; the old refresh token is revoked |
-| GET | `/patients` | List patients |
-| GET | `/patients/:id` | Get one patient |
-| GET | `/patients/:id/appointments` | List a patient's appointments with doctor details |
-| POST | `/patients` | Create a patient |
-| PATCH | `/patients/:id` | Update a patient |
-| DELETE | `/patients/:id` | Delete a patient (409 if they have appointments) |
-| GET | `/doctors` | List doctors |
-| GET | `/doctors/:id` | Get one doctor |
-| POST | `/doctors` | Create a doctor |
-| PATCH | `/doctors/:id` | Update a doctor |
-| DELETE | `/doctors/:id` | Soft delete a doctor |
-| GET | `/appointments` | List appointments with filters and pagination (see below) |
-| GET | `/appointments/:id` | Get one appointment with patient and doctor |
-| POST | `/appointments` | Book an appointment on a 30-minute slot (409 if the doctor or the patient is already booked then) |
-| PATCH | `/appointments/:id` | Change patient, doctor or status (400 once completed, cancelled or no-show) |
-| POST | `/queue` | Check in a booked appointment and get today's next queue number (409 if already checked in) |
-| PATCH | `/queue/:id/call` | Call a queue number; every connected display receives `queue:called` over WebSocket |
+| Method | Path                         | Description                                                                                               |
+| ------ | ---------------------------- | --------------------------------------------------------------------------------------------------------- |
+| POST   | `/auth/register`             | Admin only. Create an account with a role (password hashed with bcrypt; 409 if the email exists)          |
+| POST   | `/auth/login`                | Check email and password; returns `accessToken` and `refreshToken` (401 with one message for any failure) |
+| POST   | `/auth/refresh`              | Exchange a refresh token for a new token pair; the old refresh token is revoked                           |
+| GET    | `/patients`                  | List patients                                                                                             |
+| GET    | `/patients/:id`              | Get one patient                                                                                           |
+| GET    | `/patients/:id/appointments` | List a patient's appointments with doctor details                                                         |
+| POST   | `/patients`                  | Create a patient                                                                                          |
+| PATCH  | `/patients/:id`              | Update a patient                                                                                          |
+| DELETE | `/patients/:id`              | Delete a patient (409 if they have appointments)                                                          |
+| GET    | `/doctors`                   | List doctors                                                                                              |
+| GET    | `/doctors/:id`               | Get one doctor                                                                                            |
+| POST   | `/doctors`                   | Create a doctor                                                                                           |
+| PATCH  | `/doctors/:id`               | Update a doctor                                                                                           |
+| DELETE | `/doctors/:id`               | Soft delete a doctor                                                                                      |
+| GET    | `/appointments`              | List appointments with filters and pagination (see below)                                                 |
+| GET    | `/appointments/:id`          | Get one appointment with patient and doctor                                                               |
+| POST   | `/appointments`              | Book an appointment on a 30-minute slot (409 if the doctor or the patient is already booked then)         |
+| PATCH  | `/appointments/:id`          | Change patient, doctor or status (400 once completed, cancelled or no-show)                               |
+| POST   | `/queue`                     | Check in a booked appointment and get today's next queue number (409 if already checked in)               |
+| PATCH  | `/queue/:id/call`            | Call a queue number; every connected display receives `queue:called` over WebSocket                       |
 
 `GET /appointments` query parameters (all optional):
 
-| Parameter | Example | Notes |
-|---|---|---|
-| `doctorId` | `1` | Positive integer |
-| `status` | `booked` | One of `booked`, `completed`, `cancelled`, `no_show` |
-| `date` | `2026-11-03` | `YYYY-MM-DD`, matched as a whole day in Bangkok time (UTC+7) |
-| `order` | `desc` | `asc` (default) or `desc` by appointment time |
-| `page` | `2` | Default `1` |
-| `limit` | `20` | Default `10`, max `100` |
+| Parameter  | Example      | Notes                                                        |
+| ---------- | ------------ | ------------------------------------------------------------ |
+| `doctorId` | `1`          | Positive integer                                             |
+| `status`   | `booked`     | One of `booked`, `completed`, `cancelled`, `no_show`         |
+| `date`     | `2026-11-03` | `YYYY-MM-DD`, matched as a whole day in Bangkok time (UTC+7) |
+| `order`    | `desc`       | `asc` (default) or `desc` by appointment time                |
+| `page`     | `2`          | Default `1`                                                  |
+| `limit`    | `20`         | Default `10`, max `100`                                      |
 
 The response is `{ data, meta }`, where `meta` holds `page`, `limit`, `total` and `totalPages`.
 
@@ -169,7 +173,7 @@ Not done yet: per-account lockout or CAPTCHA after repeated failed logins (the p
 - [x] Double-booking prevention (partial unique indexes, concurrency-tested)
 - [x] Real-time queue via WebSocket (Socket.IO)
 - [x] Unit + E2E tests (Vitest, Supertest)
-- [ ] CI with GitHub Actions
+- [x] CI with GitHub Actions (lint, unit, build, E2E)
 - [ ] Deployed demo
 
 Development log: [PLAN.md](PLAN.md)
