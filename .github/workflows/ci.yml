@@ -9,6 +9,20 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: clinic
+          POSTGRES_PASSWORD: clinic
+          POSTGRES_DB: clinic_booking_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -20,3 +34,7 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      - run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://clinic:clinic@localhost:5432/clinic_booking_test?schema=public
+      - run: npm run test:e2e
